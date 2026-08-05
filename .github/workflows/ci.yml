@@ -31,8 +31,10 @@ jobs:
 
       - name: verify dist is up to date
         run: |
-          if ! git diff --quiet -- dist; then
+          # --porcelain also catches files ncc newly emits (e.g. dist/package.json),
+          # which `git diff` would miss while they are untracked
+          if [ -n "$(git status --porcelain -- dist)" ]; then
             echo "::error::dist/ is out of date, run 'yarn compile' and commit the result"
-            git diff --stat -- dist
+            git status --porcelain -- dist
             exit 1
           fi

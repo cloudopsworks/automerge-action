@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
-const process = require("process");
+import process from "node:process";
 
-const fse = require("fs-extra");
-const { ArgumentParser } = require("argparse");
-const { Octokit } = require("@octokit/rest");
+import fse from "fs-extra";
+import { ArgumentParser } from "argparse";
+import { Octokit } from "@octokit/rest";
 
-const { ClientError, logger, createConfig } = require("../lib/common");
-const { executeLocally, executeGitHubAction } = require("../lib/api");
+import { ClientError, logger, createConfig } from "../lib/common.js";
+import { executeLocally, executeGitHubAction } from "../lib/api.js";
 
-const pkg = require("../package.json");
+import pkg from "../package.json" with { type: "json" };
 
 const OLD_CONFIG = [
   "MERGE_LABEL",
@@ -105,14 +105,12 @@ function env(name) {
   return val;
 }
 
-if (require.main === module) {
-  main().catch(e => {
-    if (e instanceof ClientError) {
-      process.exitCode = 2;
-      logger.error(e);
-    } else {
-      process.exitCode = 1;
-      logger.error(e);
-    }
-  });
-}
+// This module is only ever loaded as an entry point (the `automerge-action`
+// bin and, once bundled by ncc, the action's `dist/index.js`). The CommonJS
+// `require.main === module` guard has no ESM equivalent that reliably survives
+// bundling, so run unconditionally rather than risk the action silently
+// doing nothing.
+main().catch(e => {
+  process.exitCode = e instanceof ClientError ? 2 : 1;
+  logger.error(e);
+});

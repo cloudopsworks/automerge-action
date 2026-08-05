@@ -1,4 +1,4 @@
-const { branchName } = require("../lib/util");
+import { branchName } from "../lib/util.js";
 
 describe("branchName", () => {
   it("returns the branch name from a reference referring to a branch", async () => {

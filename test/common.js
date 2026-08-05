@@ -1,4 +1,4 @@
-function pullRequest() {
+export function pullRequest() {
   return {
     number: 1,
     title: "Update README",
@@ -33,5 +33,3 @@ function pullRequest() {
     }
   };
 }
-
-module.exports = { pullRequest };

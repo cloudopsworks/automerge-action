@@ -1,6 +1,6 @@
-const { update } = require("../lib/update");
-const { createConfig } = require("../lib/common");
-const { pullRequest } = require("./common");
+import { update } from "../lib/update.js";
+import { createConfig } from "../lib/common.js";
+import { pullRequest } from "./common.js";
 
 test("update will only run when the label matches", async () => {
   const pr = pullRequest();

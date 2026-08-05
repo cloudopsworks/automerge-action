@@ -1,6 +1,7 @@
-const { merge } = require("../lib/merge");
-const { createConfig } = require("../lib/common");
-const { pullRequest } = require("./common");
+import { jest } from "@jest/globals";
+import { merge } from "../lib/merge.js";
+import { createConfig } from "../lib/common.js";
+import { pullRequest } from "./common.js";
 
 let octokit, mergeMethod;
 

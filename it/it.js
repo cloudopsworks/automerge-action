@@ -1,10 +1,11 @@
-const { Octokit } = require("@octokit/rest");
+import { Octokit } from "@octokit/rest";
+import dotenv from "dotenv";
 
-const { executeLocally } = require("../lib/api");
-const { createConfig } = require("../lib/common");
+import { executeLocally } from "../lib/api.js";
+import { createConfig } from "../lib/common.js";
 
 async function main() {
-  require("dotenv").config();
+  dotenv.config();
 
   const token = process.env.GITHUB_TOKEN;
 

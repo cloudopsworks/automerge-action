@@ -1,6 +1,7 @@
-const api = require("../lib/api");
-const { createConfig } = require("../lib/common");
-const { pullRequest } = require("./common");
+import { jest } from "@jest/globals";
+import * as api from "../lib/api.js";
+import { createConfig } from "../lib/common.js";
+import { pullRequest } from "./common.js";
 
 let octokit;
 

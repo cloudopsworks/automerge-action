@@ -1,4 +1,4 @@
-const { createConfig } = require("../lib/common");
+import { createConfig } from "../lib/common.js";
 
 test("createConfig", () => {
   const config = createConfig({

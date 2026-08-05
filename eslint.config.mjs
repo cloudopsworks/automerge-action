@@ -7,12 +7,11 @@ export default [
   {
     languageOptions: {
       parserOptions: {
-        ecmaVersion: 2017,
+        ecmaVersion: "latest",
         sourceType: "module"
       },
       globals: {
         ...globals.node,
-        ...globals.es2015,
         ...globals.jest
       }
     },

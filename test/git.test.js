@@ -1,7 +1,7 @@
-const fse = require("fs-extra");
+import fse from "fs-extra";
 
-const git = require("../lib/git");
-const { tmpdir } = require("../lib/common");
+import * as git from "../lib/git.js";
+import { tmpdir } from "../lib/common.js";
 
 async function init(dir) {
   await fse.mkdirs(dir);
@@ -92,6 +92,29 @@ test("fetchUntilMergeBase finds the earliest merge base 2", async () => {
 
     const ws = `${path}/ws`;
     await git.clone(`${path}/origin`, ws, "br1");
+    await git.fetch(ws, "main");
+    expect(await git.fetchUntilMergeBase(ws, "main", 10000)).toBe(base);
+  });
+}, 15000);
+
+test("fetchUntilMergeBase deepens a shallow clone", async () => {
+  await tmpdir(async path => {
+    // git ignores --depth when cloning from a plain local path, so the other
+    // tests never produce a shallow clone. file:// forces real transport, which
+    // is what the action does in production.
+    const origin = `${path}/origin`;
+    await init(origin);
+    await commit(origin, "base %d", 10);
+    const base = await git.head(origin);
+    await git.git(origin, "checkout", "-b", "br1");
+    await commit(origin, "br1 %d", 20);
+    await git.git(origin, "checkout", "main");
+    await commit(origin, "main %d", 20);
+
+    const ws = `${path}/ws`;
+    await git.clone(`file://${origin}`, ws, "br1");
+    expect(await git.git(ws, "rev-list", "HEAD", "--count")).toBe("10");
+
     await git.fetch(ws, "main");
     expect(await git.fetchUntilMergeBase(ws, "main", 10000)).toBe(base);
   });
