@@ -22,7 +22,7 @@
     "argparse": "^2.0.1",
     "fs-extra": "^11.2.0",
     "object-resolve-path": "^1.1.1",
-    "tmp": "^0.2.3"
+    "tmp": "^0.2.7"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.38.1",
