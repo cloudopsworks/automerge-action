@@ -47226,7 +47226,7 @@ async function fetchApprovalReviewCount(context, pullRequest) {
 }
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = /*#__PURE__*/JSON.parse('{"UU":"automerge-action","rE":"0.16.3","h_":"GitHub action to automatically merge pull requests"}');
+const package_namespaceObject = /*#__PURE__*/JSON.parse('{"UU":"automerge-action","rE":"0.17.0","h_":"GitHub action to automatically merge pull requests"}');
 ;// CONCATENATED MODULE: ./bin/automerge.js
 
 
