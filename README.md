@@ -73,6 +73,12 @@ jobs:
 
 For the latest version, see the [list of releases](https://github.com/pascalgn/automerge-action/releases).
 
+### Runner requirements
+
+This action runs on the `node24` Actions runtime. GitHub-hosted runners support
+it out of the box. Self-hosted runners need to be on version `v2.327.1` or
+later; older runners will fail to start the action.
+
 ## Configuration
 
 The following merge options are supported:

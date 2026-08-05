@@ -1,6 +1,7 @@
-const { merge } = require("../lib/merge");
-const { createConfig } = require("../lib/common");
-const { pullRequest } = require("./common");
+import { jest } from "@jest/globals";
+import { merge } from "../lib/merge.js";
+import { createConfig } from "../lib/common.js";
+import { pullRequest } from "./common.js";
 
 let octokit, mergeMethod;
 
@@ -36,6 +37,44 @@ test("MERGE_COMMIT_MESSAGE with nested custom fields", async () => {
       repo: "repository",
       sha: "2c3b4d5"
     })
+  );
+});
+
+test("MERGE_COMMIT_MESSAGE resolves bracket and index placeholders", async () => {
+  // GIVEN
+  const pr = pullRequest();
+  pr.title = "Title";
+  pr.user = { login: "author" };
+  pr.labels = [{ name: "automerge" }, { name: "release" }];
+
+  const config = createConfig({
+    MERGE_COMMIT_MESSAGE:
+      '{pullRequest.number} {pullRequest.labels[1].name} {pullRequest.user["login"]}'
+  });
+
+  // WHEN
+  expect(await merge({ config, octokit }, pr)).toEqual("merged");
+
+  // THEN
+  expect(octokit.pulls.merge).toHaveBeenCalledWith(
+    expect.objectContaining({ commit_title: "1 release author" })
+  );
+});
+
+test("MERGE_COMMIT_MESSAGE renders unknown placeholders as undefined", async () => {
+  // GIVEN
+  const pr = pullRequest();
+
+  const config = createConfig({
+    MERGE_COMMIT_MESSAGE: "before {pullRequest.does.not.exist} after"
+  });
+
+  // WHEN
+  expect(await merge({ config, octokit }, pr)).toEqual("merged");
+
+  // THEN
+  expect(octokit.pulls.merge).toHaveBeenCalledWith(
+    expect.objectContaining({ commit_title: "before undefined after" })
   );
 });
 
