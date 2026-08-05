@@ -40,6 +40,44 @@ test("MERGE_COMMIT_MESSAGE with nested custom fields", async () => {
   );
 });
 
+test("MERGE_COMMIT_MESSAGE resolves bracket and index placeholders", async () => {
+  // GIVEN
+  const pr = pullRequest();
+  pr.title = "Title";
+  pr.user = { login: "author" };
+  pr.labels = [{ name: "automerge" }, { name: "release" }];
+
+  const config = createConfig({
+    MERGE_COMMIT_MESSAGE:
+      '{pullRequest.number} {pullRequest.labels[1].name} {pullRequest.user["login"]}'
+  });
+
+  // WHEN
+  expect(await merge({ config, octokit }, pr)).toEqual("merged");
+
+  // THEN
+  expect(octokit.pulls.merge).toHaveBeenCalledWith(
+    expect.objectContaining({ commit_title: "1 release author" })
+  );
+});
+
+test("MERGE_COMMIT_MESSAGE renders unknown placeholders as undefined", async () => {
+  // GIVEN
+  const pr = pullRequest();
+
+  const config = createConfig({
+    MERGE_COMMIT_MESSAGE: "before {pullRequest.does.not.exist} after"
+  });
+
+  // WHEN
+  expect(await merge({ config, octokit }, pr)).toEqual("merged");
+
+  // THEN
+  expect(octokit.pulls.merge).toHaveBeenCalledWith(
+    expect.objectContaining({ commit_title: "before undefined after" })
+  );
+});
+
 test("MERGE_COMMIT_MESSAGE_REGEX can be used to cut PR body", async () => {
   // GIVEN
   const pr = pullRequest();
